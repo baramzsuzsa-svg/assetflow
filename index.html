@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Key Functions of a CMMS</title>
+<style>
+:root{
+  --bg:#f5f4f6;--card:#fff;--ink:#18161b;--muted:#706a74;--line:#ddd9df;
+  --purple:#714188;--purple-soft:#f2ecf5;--dark:#211d24;--done:#4f6c5c
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:Inter,Arial,sans-serif;color:var(--ink)}
+button{font:inherit}
+.app{max-width:1120px;margin:auto;padding:22px}
+.frame{background:var(--card);border:1px solid var(--line);border-radius:22px;min-height:690px;box-shadow:0 10px 30px rgba(25,18,30,.06);overflow:hidden}
+.top{padding:24px 28px 18px;border-bottom:1px solid var(--line)}
+.kicker{font-size:12px;font-weight:800;letter-spacing:.13em;color:var(--purple);text-transform:uppercase}
+h1{margin:6px 0 8px;font-size:34px}
+.intro{color:var(--muted);line-height:1.55;max-width:820px;margin:0}
+.progress{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:22px}
+.pstep{border:0;background:#efedf0;padding:11px 8px;border-radius:10px;font-size:12px;font-weight:750;color:#77717a;cursor:pointer}
+.pstep.active{background:var(--purple);color:white}.pstep.visited:not(.active){background:var(--purple-soft);color:var(--purple)}
+.content{padding:28px}
+.start{text-align:center;max-width:820px;margin:45px auto}
+.start h2{font-size:30px;margin:10px}.start p{color:var(--muted);line-height:1.6}
+.overview{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:30px 0}
+.ov{border:1px solid var(--line);border-radius:14px;padding:18px 10px;min-height:110px;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:800;position:relative;background:#fff}
+.ov:not(:last-child):after{content:"→";position:absolute;right:-15px;color:var(--purple);font-size:20px;z-index:2}
+.primary{border:0;background:var(--purple);color:#fff;padding:13px 20px;border-radius:11px;font-weight:800;cursor:pointer}
+.secondary{border:1px solid var(--line);background:#fff;color:var(--ink);padding:12px 17px;border-radius:11px;font-weight:750;cursor:pointer}
+.learning-head{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;margin-bottom:22px}
+.num{color:var(--purple);font-weight:900;font-size:13px;letter-spacing:.1em}
+h2{margin:5px 0;font-size:28px}.question{font-size:17px;font-weight:800;margin-top:7px}.desc{color:var(--muted);line-height:1.55;max-width:760px}
+.process{display:flex;align-items:center;flex-wrap:wrap;gap:7px;margin:18px 0 25px}
+.node{border:1px solid var(--line);background:#faf9fa;border-radius:10px;padding:9px 12px;font-size:12px;font-weight:800}.arrow{color:var(--purple);font-weight:900}
+.workspace{display:grid;grid-template-columns:1.25fr .75fr;gap:20px}
+.elements{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.element{border:1px solid var(--line);background:#fff;border-radius:13px;padding:15px;text-align:left;cursor:pointer;min-height:84px;transition:.18s}
+.element:hover,.element.active{border-color:var(--purple);background:var(--purple-soft);transform:translateY(-1px)}
+.element.seen:after{content:" ✓";color:var(--done)}
+.element b{display:block;font-size:13px}.element span{display:block;color:var(--muted);font-size:12px;margin-top:5px}
+.detail{border-radius:16px;background:var(--dark);color:#fff;padding:22px;min-height:190px}
+.detail .label{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#cbbfd0;font-weight:800}
+.detail h3{margin:8px 0;font-size:20px}.detail p{color:#e4dee7;line-height:1.55;font-size:14px}
+.key{margin-top:20px;border-left:4px solid var(--purple);background:var(--purple-soft);padding:14px 16px;border-radius:8px;font-size:14px}
+.nav{display:flex;justify-content:space-between;margin-top:25px;gap:12px}
+.final{max-width:900px;margin:auto}
+.final-flow{display:grid;gap:8px;margin:24px 0}
+.final-row{border:1px solid var(--line);border-radius:13px;padding:14px 17px;background:#fff}
+.final-row b{color:var(--purple);font-size:12px}.final-row span{display:block;margin-top:4px;color:var(--muted);font-size:13px}
+.down{text-align:center;color:var(--purple);font-weight:900}
+.complete{background:var(--dark);color:#fff;border-radius:16px;padding:20px;margin-top:22px;text-align:center}
+.complete p{color:#d9d1dd;line-height:1.5}
+@media(max-width:760px){
+ .progress{grid-template-columns:1fr}.overview{grid-template-columns:1fr}.ov:not(:last-child):after{content:"↓";right:auto;bottom:-18px}
+ .workspace{grid-template-columns:1fr}.elements{grid-template-columns:1fr}.learning-head{display:block}
+ h1{font-size:28px}.content{padding:20px}.top{padding:20px}
+}
+</style>
+</head>
+<body>
+<div class="app"><main class="frame">
+<header class="top">
+ <div class="kicker">CMMS Foundations · Learn</div>
+ <h1>Key Functions of a CMMS</h1>
+ <p class="intro">Explore the five core functions of a CMMS and see how they connect to support the complete maintenance process.</p>
+ <div class="progress" id="progress" hidden></div>
+</header>
+<section class="content" id="screen"></section>
+</main></div>
+
+<script>
+const sections=[
+{
+name:"Asset Management",short:"01 ASSETS",question:"WHAT ARE WE MAINTAINING?",
+intro:"Asset Management provides a centralized source of information for maintainable equipment and assets.",
+items:[
+["Equipment Records","Register equipment and machines in one system."],
+["Location","Identify where an asset is installed or used."],
+["Technical Information","Store specifications and important equipment information."],
+["Documentation","Connect manuals and relevant documents to the asset."],
+["Maintenance History","Keep previous maintenance activities and work records connected to the equipment."],
+["Lifecycle & Performance","Track asset performance, recurring failures and lifecycle information."]
+],
+key:"Asset Management creates the equipment information foundation for maintenance."
+},
+{
+name:"Work Order Management",short:"02 WORK ORDERS",question:"WHAT WORK NEEDS TO BE DONE?",
+intro:"Work Order Management enables maintenance teams to plan, execute, track and document maintenance work.",
+flow:["OPEN","ASSIGNED","IN PROGRESS","COMPLETED"],
+items:[
+["Create","Create a maintenance task."],["Assign","Define who is responsible for the work."],
+["Track","Monitor the status of maintenance activities."],["Labor","Record time spent performing the work."],
+["Materials","Record materials and spare parts used."],["Findings & Actions","Document what was found and what was done."],
+["Completion","Store final maintenance details for future reference."]
+],
+key:"Work Order Management controls and documents maintenance work from start to finish."
+},
+{
+name:"Preventive Maintenance",short:"03 PREVENTIVE",question:"WHEN SHOULD PLANNED MAINTENANCE HAPPEN?",
+intro:"Preventive Maintenance helps maintenance teams schedule work before equipment failures occur.",
+flow:["MAINTENANCE TRIGGER","PLANNED MAINTENANCE","WORK ORDER GENERATED","WORK PERFORMED"],
+items:[
+["Time","Schedule maintenance according to calendar intervals."],
+["Operating Hours","Trigger maintenance after defined equipment operating hours."],
+["Production Cycles","Trigger maintenance after a defined number of production cycles."],
+["Other Defined Intervals","Use other planned maintenance criteria where required."],
+["Schedule","Plan recurring maintenance."],["Automate","Generate planned maintenance work automatically."],
+["Prevent","Reduce the likelihood of unplanned equipment failures."],
+["Reliability","Support reliable equipment operation."],["Asset Life","Help maintain equipment condition over its lifecycle."]
+],
+connection:"Preventive Maintenance can trigger planned work. Work Order Management is then used to manage and document that work.",
+key:"Preventive Maintenance helps maintenance teams act before equipment fails."
+},
+{
+name:"Spare Parts & Inventory",short:"04 INVENTORY",question:"WHAT DO WE NEED TO PERFORM THE WORK?",
+intro:"Spare Parts & Inventory helps ensure that required maintenance materials are available when needed.",
+flow:["CHECK AVAILABILITY","USE / ISSUE PART","UPDATE STOCK","REORDER WHEN REQUIRED"],
+items:[
+["Availability","See whether the required spare part is available."],["Stock Level","Know how many parts are currently available."],
+["Part Usage","Record parts consumed during maintenance."],["Stock Movements","Track changes in inventory."],
+["Reorder Level","Identify when stock reaches a defined minimum level."],["Replenishment","Support restocking before parts become unavailable."]
+],
+key:"Spare Parts & Inventory connects maintenance work with the materials required to complete it."
+},
+{
+name:"Reporting & KPIs",short:"05 REPORTING",question:"WHAT CAN WE LEARN FROM MAINTENANCE ACTIVITIES?",
+intro:"Maintenance activities generate data. Reporting & KPIs transform this data into information that supports maintenance decisions and continuous improvement.",
+flow:["MAINTENANCE ACTIVITIES","RECORDED DATA","REPORTS & KPIs","TRENDS & PERFORMANCE","BETTER DECISIONS"],
+items:[
+["Work Order Status","Monitor completed and overdue maintenance work."],["Downtime","Understand how equipment downtime develops."],
+["MTBF","Monitor Mean Time Between Failures."],["MTTR","Monitor Mean Time To Repair."],
+["Recurring Failures","Identify equipment or problems that repeatedly require maintenance."],
+["Maintenance Trends","Identify patterns and changes over time."]
+],
+key:"Reporting & KPIs turn maintenance data into information for decision-making and continuous improvement."
+}
+];
+
+let current=-1,visited=new Set(),seen={};
+const screen=document.getElementById("screen"),progress=document.getElementById("progress");
+
+function renderProgress(){
+ progress.hidden=current<0;
+ progress.innerHTML="";
+ sections.forEach((s,i)=>{
+  const b=document.createElement("button");
+  b.className="pstep "+(i===current?"active ":"")+(visited.has(i)?"visited":"");
+  b.textContent=s.short;
+  b.onclick=()=>{current=i;visited.add(i);render()};
+  progress.appendChild(b);
+ });
+}
+function start(){
+ current=-1;progress.hidden=true;
+ screen.innerHTML=`<div class="start">
+ <div class="kicker">The maintenance system</div><h2>Five functions. One connected process.</h2>
+ <p>A CMMS brings together five core functional areas that support the complete maintenance process. Together, they help maintenance teams plan, execute, monitor and continuously improve maintenance activities.</p>
+ <div class="overview">${sections.map(s=>`<div class="ov">${s.name}</div>`).join("")}</div>
+ <button class="primary" onclick="go(0)">START EXPLORING →</button></div>`;
+}
+function go(i){current=i;visited.add(i);render()}
+function render(){
+ renderProgress();
+ const s=sections[current];
+ const flow=s.flow?`<div class="process">${s.flow.map((x,i)=>`<span class="node">${x}</span>${i<s.flow.length-1?'<span class="arrow">→</span>':''}`).join("")}</div>`:"";
+ screen.innerHTML=`<div class="learning-head"><div>
+ <div class="num">STEP ${current+1} OF 5</div><h2>${s.name}</h2><div class="question">${s.question}</div>
+ <p class="desc">${s.intro}</p></div></div>
+ ${flow}
+ <div class="workspace">
+  <div class="elements">${s.items.map((x,i)=>`<button class="element ${(seen[current]||new Set()).has(i)?"seen":""}" onclick="showDetail(${i},this)"><b>${x[0]}</b><span>Explore this element</span></button>`).join("")}</div>
+  <aside class="detail" id="detail"><div class="label">Explore the elements</div><h3>Select an item</h3><p>Click any element to reveal what it supports within ${s.name}.</p></aside>
+ </div>
+ ${s.connection?`<div class="key"><b>Connection:</b> ${s.connection}</div>`:""}
+ <div class="key"><b>KEY IDEA</b><br>${s.key}</div>
+ <div class="nav"><button class="secondary" onclick="${current===0?'start()':'go('+(current-1)+')'}">← ${current===0?'OVERVIEW':'PREVIOUS'}</button>
+ <button class="primary" onclick="${current===4?'finalScreen()':'go('+(current+1)+')'}">${current===4?'SEE THE COMPLETE CMMS':'CONTINUE →'}</button></div>`;
+}
+function showDetail(i,btn){
+ if(!seen[current])seen[current]=new Set();seen[current].add(i);
+ document.querySelectorAll(".element").forEach(x=>x.classList.remove("active"));
+ btn.classList.add("active","seen");
+ const x=sections[current].items[i];
+ document.getElementById("detail").innerHTML=`<div class="label">${sections[current].name}</div><h3>${x[0]}</h3><p>${x[1]}</p>`;
+}
+function finalScreen(){
+ current=5;progress.hidden=true;
+ screen.innerHTML=`<div class="final">
+ <div class="kicker">Complete CMMS logic</div><h2>Put the system together</h2>
+ <p class="desc">The functions support different parts of maintenance, while information created during the work feeds back into future planning and decisions.</p>
+ <div class="final-flow">
+  <div class="final-row"><b>ASSET</b><span>What are we maintaining? · Asset information and maintenance history</span></div><div class="down">↓</div>
+  <div class="final-row"><b>PLAN & MANAGE WORK</b><span>What needs to be done? · Work Order Management</span></div><div class="down">↕</div>
+  <div class="final-row"><b>PLAN AHEAD</b><span>When should planned maintenance happen? · Preventive Maintenance</span></div><div class="down">↓</div>
+  <div class="final-row"><b>SUPPORT THE WORK</b><span>What resources are required? · Spare Parts & Inventory</span></div><div class="down">↓</div>
+  <div class="final-row"><b>RECORD</b><span>Labor + materials + findings + completion information</span></div><div class="down">↓</div>
+  <div class="final-row"><b>ANALYZE</b><span>What can we learn? · Reporting & KPIs</span></div><div class="down">↓</div>
+  <div class="final-row"><b>IMPROVE ↺</b><span>Use maintenance information to improve future work, planning and decisions.</span></div>
+ </div>
+ <div class="key"><b>KEY MESSAGE</b><br>A CMMS is not just a work order system. Its value comes from connecting assets, maintenance work, preventive activities, spare parts and performance data in one system.</div>
+ <div class="complete"><div class="kicker" style="color:#d4c1dd">THEORY COMPLETE</div><h2>You know the building blocks.</h2><p>You have explored the five key functions of a CMMS. Next, you will see how they work together in a maintenance situation.</p></div>
+ <div class="nav"><button class="secondary" onclick="go(4)">← BACK</button><button class="primary" onclick="start()">RESTART</button></div>
+ </div>`;
+}
+start();
+</script>
+</body>
+</html>
